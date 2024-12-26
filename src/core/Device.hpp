@@ -10,6 +10,8 @@
 #include <string>
 #include <vector>
 
+#define DEBUG
+
 struct SwapChainSupportDetails
 {
     VkSurfaceCapabilitiesKHR capabilities;
