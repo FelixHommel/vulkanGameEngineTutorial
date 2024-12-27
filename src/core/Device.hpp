@@ -10,8 +10,6 @@
 #include <string>
 #include <vector>
 
-#define DEBUG
-
 struct SwapChainSupportDetails
 {
     VkSurfaceCapabilitiesKHR capabilities;
@@ -93,7 +91,7 @@ private:
     bool checkDeviceExtensionSupport(VkPhysicalDevice device);
     SwapChainSupportDetails querySwapChainSupport(VkPhysicalDevice device);
 
-    const std::vector<const char*> validationLayers{ "VK LAYER KHRONOS validation" };
+    const std::vector<const char*> validationLayers{ "VK_LAYER_KHRONOS_validation" };
     const std::vector<const char*> deviceExtensions{ VK_KHR_SWAPCHAIN_EXTENSION_NAME };
 };
 

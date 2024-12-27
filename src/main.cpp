@@ -2,6 +2,7 @@
 
 #include <exception>
 #include <iostream>
+#include <ostream>
 
 int main()
 {
@@ -14,7 +15,7 @@ int main()
     catch(const std::exception& e)
     {
         std::cerr << e.what() << std::endl;
-        return 1;
+        std::exit(1);
     }
 
     return 0;

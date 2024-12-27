@@ -1,6 +1,8 @@
 #include "Pipeline.hpp"
 
+#include <cassert>
 #include <fstream>
+#include <filesystem>
 #include <stdexcept>
 #include <iostream>
 #include <vulkan/vulkan_core.h>
@@ -8,6 +10,9 @@
 Pipeline::Pipeline(Device& device, const std::string& vertFilepath, const std::string& fragFilepath, const PipelineConfigInfo& configInfo)
     : device(device)
 {
+    assert(configInfo.pipelineLayout != VK_NULL_HANDLE && "Cannot craete graphics pipeline: no pipelineLayout provided");
+    assert(configInfo.renderPass != VK_NULL_HANDLE && "Cannot craete graphics pipeline: no renderPass provided");
+
     createShaderModule(readFile(vertFilepath), &m_vertShaderModule);
     createShaderModule(readFile(fragFilepath), &m_fragShaderModule);
 
@@ -157,7 +162,8 @@ PipelineConfigInfo Pipeline::defaultPipelineConfigInfo(uint32_t width, uint32_t 
 
 std::vector<char> Pipeline::readFile(const std::string& filepath)
 {
-    std::ifstream file(filepath, std::ios::ate | std::ios::binary);
+    std::filesystem::path path{ filepath };
+    std::ifstream file(path, std::ios::ate | std::ios::binary);
 
     if(!file.is_open())
         throw std::runtime_error("Failure opening the file at: " + filepath);
