@@ -3,6 +3,7 @@
 
 #include "Device.hpp"
 
+#include <filesystem>
 #include <string>
 #include <vector>
 #include <vulkan/vulkan_core.h>
@@ -11,7 +12,6 @@ struct PipelineConfigInfo
 {
     VkViewport viewport;
     VkRect2D scissor;
-    VkPipelineViewportStateCreateInfo viewportInfo;
     VkPipelineInputAssemblyStateCreateInfo inputAssemblyInfo;
     VkPipelineRasterizationStateCreateInfo rasterizationInfo;
     VkPipelineMultisampleStateCreateInfo multisampleInfo;
@@ -34,13 +34,15 @@ public:
 
     static PipelineConfigInfo defaultPipelineConfigInfo(uint32_t width, uint32_t height);
 
+    void bind(VkCommandBuffer commandBuffer);
+
 private:
     Device& device;
     VkPipeline m_graphicsPipeline;
     VkShaderModule m_vertShaderModule;
     VkShaderModule m_fragShaderModule;
 
-    static std::vector<char> readFile(const std::string& filepath);
+    static std::vector<char> readFile(const std::filesystem::path& filepath);
 
     void createShaderModule(const std::vector<char>& code, VkShaderModule* shaderModule);
 };

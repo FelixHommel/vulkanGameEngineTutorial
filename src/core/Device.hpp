@@ -7,10 +7,9 @@
 
 #include <cstdint>
 #include <optional>
-#include <string>
 #include <vector>
 
-struct SwapChainSupportDetails
+struct SwapchainSupportDetails
 {
     VkSurfaceCapabilitiesKHR capabilities;
     std::vector<VkSurfaceFormatKHR> formats;
@@ -48,7 +47,7 @@ public:
     VkQueue graphicsQueue() { return m_graphicsQueue; }
     VkQueue presentQueue() { return m_presentQueue; }
 
-    SwapChainSupportDetails getSwapChainSupport() { return querySwapChainSupport(m_physicalDevice); }
+    SwapchainSupportDetails getSwapchainSupport() { return querySwapChainSupport(m_physicalDevice); }
     uint32_t findMemoryType(uint32_t typeFilter, VkMemoryPropertyFlags properties);
     QueueFamilyIndices findPhysicalQueueFamilies() { return findQueueFamilies(m_physicalDevice); }
     VkFormat findSupportedFormat(const std::vector<VkFormat>& candidates, VkImageTiling tiling, VkFormatFeatureFlags features);
@@ -59,7 +58,7 @@ public:
     void copyBuffer(VkBuffer src, VkBuffer dst, VkDeviceSize size);
     void copyBufferToImage(VkBuffer buffer, VkImage image, uint32_t width, uint32_t height, uint32_t layerCount);
 
-    void createImageWithInfo(const VkImageCreateInfo& imageInfo, VkMemoryPropertyFlags properties, VkImage image, VkDeviceMemory& imageMemory);
+    void createImageWithInfo(const VkImageCreateInfo& imageInfo, VkMemoryPropertyFlags properties, VkImage& image, VkDeviceMemory& imageMemory);
 
     VkPhysicalDeviceProperties properties;
 
@@ -89,7 +88,7 @@ private:
     void populateDebugMessengerCreateInfo(VkDebugUtilsMessengerCreateInfoEXT& createInfo);
     void hasGlfwRequiredInstanceExtensions();
     bool checkDeviceExtensionSupport(VkPhysicalDevice device);
-    SwapChainSupportDetails querySwapChainSupport(VkPhysicalDevice device);
+    SwapchainSupportDetails querySwapChainSupport(VkPhysicalDevice device);
 
     const std::vector<const char*> validationLayers{ "VK_LAYER_KHRONOS_validation" };
     const std::vector<const char*> deviceExtensions{ VK_KHR_SWAPCHAIN_EXTENSION_NAME };

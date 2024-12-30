@@ -2,7 +2,6 @@
 
 #include <cassert>
 #include <fstream>
-#include <filesystem>
 #include <stdexcept>
 #include <iostream>
 #include <vulkan/vulkan_core.h>
@@ -45,13 +44,21 @@ Pipeline::Pipeline(Device& device, const std::string& vertFilepath, const std::s
         .pVertexAttributeDescriptions = nullptr
     };
 
+    VkPipelineViewportStateCreateInfo viewportInfo{
+        .sType = VK_STRUCTURE_TYPE_PIPELINE_VIEWPORT_STATE_CREATE_INFO,
+        .viewportCount = 1,
+        .pViewports = &configInfo.viewport,
+        .scissorCount = 1,
+        .pScissors = &configInfo.scissor
+    };
+
     VkGraphicsPipelineCreateInfo pipelineInfo{
         .sType = VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_CREATE_INFO,
         .stageCount = 2,
         .pStages = shaderStages,
         .pVertexInputState = &vertexInputInfo,
         .pInputAssemblyState = &configInfo.inputAssemblyInfo,
-        .pViewportState = &configInfo.viewportInfo,
+        .pViewportState = &viewportInfo,
         .pRasterizationState = &configInfo.rasterizationInfo,
         .pMultisampleState = &configInfo.multisampleInfo,
         .pDepthStencilState = &configInfo.depthStencilInfo,
@@ -90,13 +97,6 @@ PipelineConfigInfo Pipeline::defaultPipelineConfigInfo(uint32_t width, uint32_t 
         .scissor = VkRect2D{
             .offset = { 0, 0 },
             .extent = { width, height }
-        },
-        .viewportInfo = VkPipelineViewportStateCreateInfo{
-            .sType = VK_STRUCTURE_TYPE_PIPELINE_VIEWPORT_STATE_CREATE_INFO,
-            .viewportCount = 1,
-            .pViewports = &configInfo.viewport,
-            .scissorCount = 1,
-            .pScissors = &configInfo.scissor
         },
         .inputAssemblyInfo = VkPipelineInputAssemblyStateCreateInfo{
             .sType = VK_STRUCTURE_TYPE_PIPELINE_INPUT_ASSEMBLY_STATE_CREATE_INFO,
@@ -160,13 +160,17 @@ PipelineConfigInfo Pipeline::defaultPipelineConfigInfo(uint32_t width, uint32_t 
     return configInfo;
 }
 
-std::vector<char> Pipeline::readFile(const std::string& filepath)
+void Pipeline::bind(VkCommandBuffer commandBuffer)
 {
-    std::filesystem::path path{ filepath };
-    std::ifstream file(path, std::ios::ate | std::ios::binary);
+    vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, m_graphicsPipeline);
+}
+
+std::vector<char> Pipeline::readFile(const std::filesystem::path& filepath)
+{
+    std::ifstream file(filepath, std::ios::ate | std::ios::binary);
 
     if(!file.is_open())
-        throw std::runtime_error("Failure opening the file at: " + filepath);
+        throw std::runtime_error("Failure opening the file at: " + filepath.string());
 
     size_t fileSize{ static_cast<size_t>(file.tellg()) };
     std::vector<char> buffer(fileSize);

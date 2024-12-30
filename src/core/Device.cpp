@@ -219,7 +219,7 @@ bool Device::isDeviceSuitable(VkPhysicalDevice device)
 
     if(extensionsSupported)
     {
-        SwapChainSupportDetails swapChainSupport{ querySwapChainSupport(device) };
+        SwapchainSupportDetails swapChainSupport{ querySwapChainSupport(device) };
         swapChainSuitable = !swapChainSupport.formats.empty() && !swapChainSupport.presentModes.empty();
     }
 
@@ -366,9 +366,9 @@ QueueFamilyIndices Device::findQueueFamilies(VkPhysicalDevice device)
     return indices;
 }
 
-SwapChainSupportDetails Device::querySwapChainSupport(VkPhysicalDevice device)
+SwapchainSupportDetails Device::querySwapChainSupport(VkPhysicalDevice device)
 {
-    SwapChainSupportDetails details;
+    SwapchainSupportDetails details;
     vkGetPhysicalDeviceSurfaceCapabilitiesKHR(device, m_surface, &details.capabilities);
 
     uint32_t formatCount;
@@ -526,7 +526,7 @@ void Device::copyBufferToImage(VkBuffer buffer, VkImage image, uint32_t width, u
     endSingleTimeCommands(commandBuffer);
 }
 
-void Device::createImageWithInfo(const VkImageCreateInfo& imageInfo, VkMemoryPropertyFlags properties, VkImage image, VkDeviceMemory& imageMemory)
+void Device::createImageWithInfo(const VkImageCreateInfo& imageInfo, VkMemoryPropertyFlags properties, VkImage& image, VkDeviceMemory& imageMemory)
 {
     if(vkCreateImage(m_device, &imageInfo, nullptr, &image) != VK_SUCCESS)
         throw std::runtime_error("Failure while creating an image");
